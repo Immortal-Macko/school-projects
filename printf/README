@@ -1,0 +1,1 @@
+In this project we recode standard function "printf" using basic instruments such as malloc, free, write, va_start, va_arg, va_copy, va_end. 
