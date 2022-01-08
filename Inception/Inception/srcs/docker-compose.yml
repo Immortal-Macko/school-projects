@@ -1,0 +1,64 @@
+version: "3.5"
+services:
+    nginx:
+        image: nginx
+        container_name: nginx
+        build: requirements/nginx/
+        env_file:
+            - ./.env
+        ports:
+            - 443:443
+        networks:
+                - mynet
+        volumes:
+            - /home/flouie/data/wordpress:/var/www/wordpress
+        restart: always
+        depends_on:
+            - wordpress
+
+    wordpress:
+        image: wordpress
+        container_name: wordpress
+        volumes:
+            - /home/flouie/data/wordpress:/var/www/wordpress
+        build: requirements/wordpress/
+        networks:
+                - mynet
+        env_file:
+            - ./.env
+        restart: always
+        depends_on:
+            - mariadb 
+
+    mariadb:
+        image: mariadb
+        container_name: mariadb
+        env_file:
+            - ./.env
+        build: requirements/mariadb/
+        restart: always
+        networks:
+                - mynet
+        volumes:
+            - /home/flouie/data/maridb:/var/lib/mysql
+
+volumes:
+        wordpress:
+                
+                name: wordpress
+                driver: local
+                driver_opts:
+                        type: none
+                        o: bind
+                        device: /home/flouie/data/wordpress
+        mariadb:
+                name: mariadb
+                driver: local
+                driver_opts:
+                        type: none
+                        o: bind
+                        device: /home/flouie/data/mariadb
+            
+networks:
+        mynet:
+            driver: bridge
